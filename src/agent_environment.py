@@ -18,6 +18,11 @@ pygame.font.init()
 game_font = pygame.font.SysFont("Comic Sans MS", 15)
 
 
+def load_image(image_path):
+    image = pygame.image.load(image_path).convert_alpha()
+    return image
+
+
 def get_landscape_surface(size):
     landscape = get_landscape(size)
     print("Created a landscape of size", landscape.shape)
@@ -25,10 +30,16 @@ def get_landscape_surface(size):
     return pygame_surface
 
 
+# def get_combat_surface(size):
+#     landscape = get_combat_bg(size)
+#     print("Created a landscape of size", landscape.shape)
+#     pygame_surface = pygame.surfarray.make_surface(landscape[:, :, :3])
+#     return pygame_surface
 def get_combat_surface(size):
     landscape = get_combat_bg(size)
     print("Created a landscape of size", landscape.shape)
-    pygame_surface = pygame.surfarray.make_surface(landscape[:, :, :3])
+    pygame_surface = load_image("assets/lego.png")
+    pygame_surface = pygame.transform.scale(pygame_surface, size)
     return pygame_surface
 
 
@@ -71,7 +82,7 @@ if __name__ == "__main__":
     sprite_path = "assets/lego.png"
     sprite_speed = 1
 
-    screen = setup_window(width, height, "Game World Gen Practice")
+    screen = setup_window(width, height, "Lost Wanderer of Elysia")
 
     landscape_surface = get_landscape_surface(size)
     combat_surface = get_combat_surface(size)
@@ -100,7 +111,7 @@ if __name__ == "__main__":
 
     """ Add a line below that will reset the player variable to 
     a new object of PyGameAIPlayer class."""
-    player = PyGameAIPlayer()
+    #player = PyGameAIPlayer()
 
     state = State(
         current_city=start_city,
@@ -110,7 +121,7 @@ if __name__ == "__main__":
         cities=cities,
         routes=routes,
     )
-
+    #fix routing
     while True:
         action = player.selectAction(state)
         if 0 <= int(chr(action)) <= 9:
