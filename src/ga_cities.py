@@ -37,7 +37,7 @@ def game_fitness(cities, idx, elevation, size):
 
     for (x,y) in city_array:
         #checking if cities are under water (if elevation is under 0.45, its considered under water) and cities are on top of mountains (if elevation is above 0.75, its considered on mountain)
-        if ((elevation[x][y]> 0.45) & (elevation[x][y]< 0.75)):
+        if ((elevation[x][y]> 0.55) & (elevation[x][y]< 0.65)):
             fitness += 0.1
         else:
             fitness += 0.01
@@ -139,6 +139,33 @@ def show_cities(cities, landscape_pic, cmap="gist_earth"):
     plt.plot(cities[:, 1], cities[:, 0], "r.")
     plt.show()
 
+def ga_func(elevation, n_cities, size):
+    # normalize landscape
+    elevation = np.array(elevation)
+    elevation = (elevation - elevation.min()) / (elevation.max() - elevation.min())
+    landscape_pic = elevation_to_rgba(elevation)
+
+    # setup fitness function and GA
+    fitness = lambda ga_instance, cities, idx: game_fitness(
+        cities, idx, elevation=elevation, size=size
+    )
+
+    # fitness = game_fitness(cities, idx, elevation=elevation, size=size)
+
+    fitness_function, ga_instance = setup_GA(fitness, n_cities, size)
+
+    # Show one of the initial solutions.
+    cities = ga_instance.initial_population[0]
+    cities = solution_to_cities(cities, size)
+
+    # Run the GA to optimize the parameters of the function.
+    ga_instance.run()
+
+    # Show the best solution after the GA finishes running.
+    cities = ga_instance.best_solution()[0]
+    # print(cities)
+    cities = solution_to_cities(cities, size)
+    return (cities)
 
 
 if __name__ == "__main__":
@@ -155,9 +182,12 @@ if __name__ == "__main__":
     landscape_pic = elevation_to_rgba(elevation)
 
     # setup fitness function and GA
-    fitness = lambda cities, idx: game_fitness(
+    fitness = lambda ga_instance, cities, idx: game_fitness(
         cities, idx, elevation=elevation, size=size
     )
+
+    # fitness = game_fitness(cities, idx, elevation=elevation, size=size)
+
     fitness_function, ga_instance = setup_GA(fitness, n_cities, size)
 
     # Show one of the initial solutions.
@@ -172,8 +202,13 @@ if __name__ == "__main__":
 
     # Show the best solution after the GA finishes running.
     cities = ga_instance.best_solution()[0]
-    cities_t = solution_to_cities(cities, size)
+    # print(cities)
+    cities = solution_to_cities(cities, size)
+    print("SEE THIS")
+    print(cities)
+    print(cities[0])
+    print(cities[0][0])
     plt.imshow(landscape_pic, cmap="gist_earth")
-    plt.plot(cities_t[:, 1], cities_t[:, 0], "r.")
+    plt.plot(cities[:, 1], cities[:, 0], "r.")
     plt.show()
-    print(fitness_function(cities, 0))
+    #print(fitness_function(ga_instance, cities, 0))

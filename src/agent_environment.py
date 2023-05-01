@@ -4,7 +4,7 @@ import random
 from sprite import Sprite
 from pygame_combat import run_pygame_combat
 from pygame_human_player import PyGameHumanPlayer
-from landscape import get_landscape, get_combat_bg
+from landscape import get_landscape, get_combat_bg, get_elevation, elevation_to_rgba
 from pygame_ai_player import PyGameAIPlayer
 
 from pathlib import Path
@@ -12,6 +12,7 @@ from pathlib import Path
 sys.path.append(str((Path(__file__) / ".." / "..").resolve().absolute()))
 
 from cities_n_routes import get_randomly_spread_cities, get_routes
+from ga_cities import solution_to_cities, ga_func
 
 
 pygame.font.init()
@@ -24,10 +25,12 @@ def load_image(image_path):
 
 
 def get_landscape_surface(size):
-    landscape = get_landscape(size)
+    elevation = get_elevation(size)
+    landscape = elevation_to_rgba(elevation)
+    #landscape = get_landscape(size)
     print("Created a landscape of size", landscape.shape)
     pygame_surface = pygame.surfarray.make_surface(landscape[:, :, :3])
-    return pygame_surface
+    return pygame_surface, elevation
 
 
 # def get_combat_surface(size):
@@ -38,7 +41,7 @@ def get_landscape_surface(size):
 def get_combat_surface(size):
     landscape = get_combat_bg(size)
     print("Created a landscape of size", landscape.shape)
-    pygame_surface = load_image("assets/lego.png")
+    pygame_surface = load_image("assets/forest.png")
     pygame_surface = pygame.transform.scale(pygame_surface, size)
     return pygame_surface
 
@@ -75,7 +78,7 @@ class State:
 
 
 if __name__ == "__main__":
-    size = width, height = 640, 480
+    size = width, height = 640, 640
     black = 1, 1, 1
     start_city = 0
     end_city = 9
@@ -84,7 +87,7 @@ if __name__ == "__main__":
 
     screen = setup_window(width, height, "Lost Wanderer of Elysia")
 
-    landscape_surface = get_landscape_surface(size)
+    landscape_surface, elevation = get_landscape_surface(size)
     combat_surface = get_combat_surface(size)
     city_names = [
         "Morkomasto",
@@ -99,7 +102,10 @@ if __name__ == "__main__":
         "Forthyr",
     ]
 
-    cities = get_randomly_spread_cities(size, len(city_names))
+    #cities = get_randomly_spread_cities(size, len(city_names))
+    n_cities = 10
+    cities = ga_func(elevation, n_cities, size)
+    
     routes = get_routes(cities)
 
     random.shuffle(routes)
