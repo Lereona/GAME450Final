@@ -1,6 +1,7 @@
 
 #!/usr/bin/python
 import openai
+key = ""
 
 def connection(key):
     OPENAI_API_KEY = key
@@ -17,27 +18,27 @@ def ask_ai(messages):
 
 
 def bot_provoke_message():
-    connect = connection('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')
+    connect = connection(key)
     prompt = [{"role": "user", "content": "give me a single quote for a provocative message for 'I will win in rock paper scissors!'"}]
     response = ask_ai(prompt)
 
     return response
 
 def player_provoke_message():
-    connect = connection('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')
+    connect = connection(key)
     prompt = [{"role": "user", "content": "give me a single quote for a provocative message for 'I will not lose either!'"}]
     response = ask_ai(prompt)
 
     return response
 
 def bot_take_damage_message():
-    connect = connection('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')
+    connect = connection(key)
     prompt = [{"role": "user", "content": "give me a single quote for a message from a loser for 'That hurts!'"}]
     response = ask_ai(prompt)
     return response
 
 def player_take_damage_message():
-    connect = connection('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')
+    connect = connection(key)
     prompt = [{"role": "user", "content": "give me a single quote for a message for 'That hurts! But I will still win'"}]
     response = ask_ai(prompt)
     return response
