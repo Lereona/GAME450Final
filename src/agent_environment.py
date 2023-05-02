@@ -124,19 +124,29 @@ if __name__ == "__main__":
         cities=cities,
         routes=routes,
     )
-    #fix routing
+
     while True:
         action = player.selectAction(state)
         if 0 <= int(chr(action)) <= 9:
+            in_route = False
             if int(chr(action)) != state.current_city and not state.travelling:
-                start = cities[state.current_city]
-                state.destination_city = int(chr(action))
-                destination = cities[state.destination_city]
-                player_sprite.set_location(cities[state.current_city])
-                state.travelling = True
-                print(
-                    "Travelling from", state.current_city, "to", state.destination_city
-                )
+                #logic to check for valid route  
+                for route in routes:
+                    if ((route[0] == cities[state.current_city]).all() and (route[1] == cities[int(chr(action))]).all()) or \
+                            ((route[1] == cities[state.current_city]).all() and (route[0] == cities[int(chr(action))]).all()):
+                        in_route = True
+                        break
+
+            if in_route:
+                if int(chr(action)) != state.current_city and not state.travelling:
+                    start = cities[state.current_city]
+                    state.destination_city = int(chr(action))
+                    destination = cities[state.destination_city]
+                    player_sprite.set_location(cities[state.current_city])
+                    state.travelling = True
+                    print(
+                        "Travelling from", state.current_city, "to", state.destination_city
+                    )
 
         screen.fill(black)
         screen.blit(landscape_surface, (0, 0))
