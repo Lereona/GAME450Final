@@ -17,6 +17,7 @@ class CombatPlayer(Player):
         self.health = 100
         self.weapon = 0
         self.current_env_state = None
+        self.stamina = 100
 
     def selectAction(self, percept):
         """

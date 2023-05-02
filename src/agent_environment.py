@@ -102,11 +102,12 @@ if __name__ == "__main__":
     #cities = get_randomly_spread_cities(size, len(city_names))
     n_cities = 10
     cities = ga_func(elevation, n_cities, size)
+
     
     routes = get_routes(cities)
 
     random.shuffle(routes)
-    routes = routes[:10]
+    routes = routes[:20]
 
     player_sprite = Sprite(sprite_path, cities[start_city])
 
@@ -147,9 +148,18 @@ if __name__ == "__main__":
                     print(
                         "Travelling from", state.current_city, "to", state.destination_city
                     )
+                    player.money = player.money - abs(75*(elevation[cities[state.destination_city][0]][cities[state.destination_city][1]]))
+                    if player.money <= 0:
+                        print("Game OVER, ran out of money!")
+                        pygame.quit()
+                        sys.exit()
+                        break
 
         screen.fill(black)
         screen.blit(landscape_surface, (0, 0))
+        stamina_display = pygame.font.SysFont("Comic Sans MS", 30).render("Money: "+str(player.money), True, (250, 0, 0))
+        screen.blit(stamina_display, (100,500))
+
 
         for city in cities:
             pygame.draw.circle(screen, (255, 0, 0), city, 5)
@@ -174,6 +184,6 @@ if __name__ == "__main__":
         else:
             player_sprite.draw_sprite(screen)
         pygame.display.update()
-        if state.current_city == end_city:
-            print('You have reached the end of the game!')
-            break
+        # if state.current_city == end_city:
+        #     print('You have reached the end of the game!')
+        #     break

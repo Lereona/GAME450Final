@@ -4,6 +4,7 @@ from turn_combat import CombatPlayer
 
 class PyGameHumanPlayer:
     def __init__(self) -> None:
+        self.money = 100
         pass
 
     def selectAction(self, state):
