@@ -148,16 +148,25 @@ if __name__ == "__main__":
                     print(
                         "Travelling from", state.current_city, "to", state.destination_city
                     )
-                    player.money = player.money - abs(75*(elevation[cities[state.destination_city][0]][cities[state.destination_city][1]]))
+                    #traveling cost based on elevation height
+                    player.money = player.money - abs(50*(elevation[cities[state.destination_city][0]][cities[state.destination_city][1]]))
+                    #lose if no money
                     if player.money <= 0:
-                        print("Game OVER, ran out of money!")
+                        print("GAME OVER, ran out of money!")
+                        pygame.quit()
+                        sys.exit()
+                        break
+                    #win if over $150
+                    if player.money >= 150:
+                        print("YOU WON! $150 REACHED")
                         pygame.quit()
                         sys.exit()
                         break
 
         screen.fill(black)
         screen.blit(landscape_surface, (0, 0))
-        stamina_display = pygame.font.SysFont("Comic Sans MS", 30).render("Money: "+str(player.money), True, (250, 0, 0))
+        #displays money
+        stamina_display = pygame.font.SysFont("Comic Sans MS", 30).render("Money: $"+str(round(player.money)), True, (250, 0, 0))
         screen.blit(stamina_display, (100,500))
 
 
@@ -179,7 +188,16 @@ if __name__ == "__main__":
             state.current_city = state.destination_city
 
         if state.encounter_event:
-            run_pygame_combat(combat_surface, screen, player_sprite, bot_taunt_list, player_taunt_list)
+            result = run_pygame_combat(combat_surface, screen, player_sprite, bot_taunt_list, player_taunt_list)
+            #handles win or lose battle results
+            if result == 1:
+                player.money += 30
+                print("Won battle, earned $10")
+            if result == -1:
+                print("Game OVER, ran out of HP!")
+                pygame.quit()
+                sys.exit()
+                break
             state.encounter_event = False
         else:
             player_sprite.draw_sprite(screen)
