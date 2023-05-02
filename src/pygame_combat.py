@@ -48,7 +48,7 @@ def random_player_taunt(message):
     return (pygame.font.SysFont("Comic Sans MS", 15).render("You: " + message, True, (220, 0, 0)))
 
 
-def draw_combat_on_window(combat_surface, screen, player_sprite, opponent_sprite, bot_taunt_list, player_taunt_list):
+def draw_combat_on_window(combat_surface, screen, player_sprite, opponent_sprite, player, opponent, bot_taunt_list, player_taunt_list):
     screen.blit(combat_surface, (0, 0))
     player_sprite.draw_sprite(screen)
     opponent_sprite.draw_sprite(screen)
@@ -56,6 +56,10 @@ def draw_combat_on_window(combat_surface, screen, player_sprite, opponent_sprite
     screen.blit(text_surface, (50, 50))
     screen.blit(random_bot_taunt(random.choice(bot_taunt_list)), (50, 500))
     screen.blit(random_player_taunt(random.choice(player_taunt_list)), (50, 550))
+    player_health = pygame.font.SysFont("Comic Sans MS", 25).render("Your HP: "+str(player.health), True, (220, 0, 0))
+    bot_health = pygame.font.SysFont("Comic Sans MS", 25).render("Thief HP: "+str(opponent.health), True, (220, 0, 0))
+    screen.blit(player_health, (50, 300))
+    screen.blit(bot_health, (50, 350))
     pygame.display.update()
 
 
@@ -87,11 +91,7 @@ def run_pygame_combat(combat_surface, screen, player_sprite, bot_taunt_list, pla
     counter = 0
     # Main Game Loop
     while not currentGame.gameOver:
-        draw_combat_on_window(combat_surface, screen, player_sprite, opponent_sprite, bot_taunt_list, player_taunt_list)
-        player_health = pygame.font.SysFont("Comic Sans MS", 25).render("Your HP: "+str(player.health), True, (220, 0, 0))
-        bot_health = pygame.font.SysFont("Comic Sans MS", 25).render("Thief HP: "+str(opponent.health), True, (220, 0, 0))
-        screen.blit(player_health, (50, 300))
-        screen.blit(bot_health, (50, 350))
+        draw_combat_on_window(combat_surface, screen, player_sprite, opponent_sprite, player, opponent, bot_taunt_list, player_taunt_list)
         run_turn(currentGame, player, opponent)
 
         
