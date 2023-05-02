@@ -5,6 +5,7 @@ from turn_combat import CombatPlayer
 class PyGameHumanPlayer:
     def __init__(self) -> None:
         self.money = 100
+        self.turn_no = 0
         pass
 
     def selectAction(self, state):
@@ -12,7 +13,7 @@ class PyGameHumanPlayer:
             if event.type == pygame.QUIT:
                 pygame.quit()
             if event.type == pygame.KEYDOWN:
-                if ord("0") <= event.key <= ord("9"):
+                if (ord("0") <= event.key <= ord("9")) or event.key == ord("j") or event.key == ord("c"):
                     return event.key
         return ord(str(state.current_city))  # Not a safe operation for >10 cities
 

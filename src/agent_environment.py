@@ -14,7 +14,7 @@ sys.path.append(str((Path(__file__) / ".." / "..").resolve().absolute()))
 
 from cities_n_routes import get_randomly_spread_cities, get_routes
 from ga_cities import solution_to_cities, ga_func
-
+from journal import draw_journal_on_window
 
 pygame.font.init()
 game_font = pygame.font.SysFont("Comic Sans MS", 15)
@@ -34,11 +34,18 @@ def get_landscape_surface(size):
     return pygame_surface, elevation
 
 def get_combat_surface(size):
-    landscape = get_combat_bg(size)
-    print("Created a combat surface of size", landscape.shape)
     pygame_surface = load_image("assets/forest.png")
     pygame_surface = pygame.transform.scale(pygame_surface, size)
+    print("Loaded combat surface")
     return pygame_surface
+
+#added journaling mechanism
+def get_journal_surface(size):
+    pygame_surface = load_image("assets/journal.png")
+    pygame_surface = pygame.transform.scale(pygame_surface, size)    
+    print("Loaded journal surface")
+    return pygame_surface
+
 
 
 def setup_window(width, height, caption):
@@ -86,6 +93,8 @@ if __name__ == "__main__":
 
     landscape_surface, elevation = get_landscape_surface(size)
     combat_surface = get_combat_surface(size)
+    journal_surface = get_journal_surface(size)
+
     city_names = [
         "Morkomasto",
         "Morathrad",
@@ -128,7 +137,16 @@ if __name__ == "__main__":
 
     while True:
         action = player.selectAction(state)
-        if 0 <= int(chr(action)) <= 9:
+        #open/close journal
+        if chr(action) == "j":
+                if not state.travelling:
+                    while not (chr(action) == "c"):
+                        action = player.selectAction(state)
+                        draw_journal_on_window(journal_surface, screen, player)
+        if chr(action) =="c":
+            print("")
+        #select city
+        elif 0 <= int(chr(action)) <= 9:
             in_route = False
             if int(chr(action)) != state.current_city and not state.travelling:
                 #logic to check for valid route  
@@ -150,25 +168,33 @@ if __name__ == "__main__":
                     )
                     #traveling cost based on elevation height
                     player.money = player.money - abs(50*(elevation[cities[state.destination_city][0]][cities[state.destination_city][1]]))
+                    player.turn_no +=1
                     #lose if no money
                     if player.money <= 0:
                         print("GAME OVER, ran out of money!")
+                        print("Turns took: "+str(player.turn_no))
                         pygame.quit()
                         sys.exit()
                         break
                     #win if over $150
                     if player.money >= 150:
                         print("YOU WON! $150 REACHED")
+                        print("Turns took: "+str(player.turn_no))
                         pygame.quit()
                         sys.exit()
                         break
+            
 
         screen.fill(black)
         screen.blit(landscape_surface, (0, 0))
         #displays money
         stamina_display = pygame.font.SysFont("Comic Sans MS", 30).render("Money: $"+str(round(player.money)), True, (250, 0, 0))
         screen.blit(stamina_display, (100,500))
-
+        #display instructions
+        instruction_city_display = pygame.font.SysFont("Comic Sans MS", 15).render("choose city to travel: 1-9", True, (250, 0, 0))
+        instruction_journal_display = pygame.font.SysFont("Comic Sans MS", 15).render("open journal: j", True, (250, 0, 0))
+        screen.blit(instruction_city_display, (100,600))
+        screen.blit(instruction_journal_display, (100,550))
 
         for city in cities:
             pygame.draw.circle(screen, (255, 0, 0), city, 5)
@@ -188,19 +214,23 @@ if __name__ == "__main__":
             state.current_city = state.destination_city
 
         if state.encounter_event:
+            player.turn_no +=1
             result = run_pygame_combat(combat_surface, screen, player_sprite, bot_taunt_list, player_taunt_list)
             #handles win or lose battle results
             if result == 1:
                 player.money += 25
                 print("Won battle, earned $25")
+                print("Turn: "+str(player.turn_no))
                 #win if over $150
                 if player.money >= 150:
                     print("YOU WON! $150 REACHED")
+                    print("Turns took: "+str(player.turn_no))
                     pygame.quit()
                     sys.exit()
                     break
             if result == -1:
                 print("Game OVER, ran out of HP!")
+                print("Turns took: "+str(player.turn_no))
                 pygame.quit()
                 sys.exit()
                 break
