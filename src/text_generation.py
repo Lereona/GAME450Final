@@ -1,7 +1,6 @@
-
 #!/usr/bin/python
 import openai
-key = ""
+key = "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"
 
 def connection(key):
     OPENAI_API_KEY = key
@@ -19,14 +18,14 @@ def ask_ai(messages):
 
 def bot_provoke_message():
     connect = connection(key)
-    prompt = [{"role": "user", "content": "give me a single quote for a provocative message for 'I will win in rock paper scissors!'"}]
+    prompt = [{"role": "user", "content": "give me a single quote, max 7 words, for a provocative message for 'I will win in rock paper scissors!'"}]
     response = ask_ai(prompt)
 
     return response
 
 def player_provoke_message():
     connect = connection(key)
-    prompt = [{"role": "user", "content": "give me a single quote for a provocative message for 'I will not lose either!'"}]
+    prompt = [{"role": "user", "content": "give me a single quote, max 7 words, for a provocative message for 'I will not lose either!'"}]
     response = ask_ai(prompt)
 
     return response
@@ -43,10 +42,24 @@ def player_take_damage_message():
     response = ask_ai(prompt)
     return response
 
+def player_taunt_pool():
+    count = 0
+    messages = ["player taunt replace later"]
+    # messages = []
+    # while count <4:
+    #     messages += [player_provoke_message()]
+    #     count += 1
+    return messages
 
-print(bot_provoke_message())
-print(player_provoke_message())
-print(bot_take_damage_message())
-print(player_take_damage_message())
+def bot_taunt_pool():
+    count = 0
+    messages = ["bot taunt replace later"]
+    # messages = []
+    # while count <4:
+    #     messages += [bot_provoke_message()]
+    #     count += 1
+    return messages
+
+
 
 

@@ -1,10 +1,12 @@
 import pygame
 from pathlib import Path
+import random
 
 from sprite import Sprite
 from turn_combat import CombatPlayer, Combat
 from pygame_ai_player import PyGameAICombatPlayer
 from pygame_human_player import PyGameHumanCombatPlayer
+
 
 AI_SPRITE_PATH = Path("assets/ai.png")
 
@@ -39,12 +41,21 @@ def run_turn(currentGame, player, opponent):
     reward = currentGame.checkWin(player, opponent)
     return reward
 
-def draw_combat_on_window(combat_surface, screen, player_sprite, opponent_sprite):
+def random_bot_taunt(message):
+    return (pygame.font.SysFont("Comic Sans MS", 15).render("Thief: " + message, True, (220, 0, 0)))
+
+def random_player_taunt(message):
+    return (pygame.font.SysFont("Comic Sans MS", 15).render("You: " + message, True, (220, 0, 0)))
+
+
+def draw_combat_on_window(combat_surface, screen, player_sprite, opponent_sprite, bot_taunt_list, player_taunt_list):
     screen.blit(combat_surface, (0, 0))
     player_sprite.draw_sprite(screen)
     opponent_sprite.draw_sprite(screen)
-    text_surface = game_font.render("Choose s-Sword a-Arrow f-Fire!", True, (0, 0, 150))
+    text_surface = game_font.render("Choose s-Sword a-Arrow f-Fire!", True, (220, 0, 0))
     screen.blit(text_surface, (50, 50))
+    screen.blit(random_bot_taunt(random.choice(bot_taunt_list)), (50, 500))
+    screen.blit(random_player_taunt(random.choice(player_taunt_list)), (50, 550))
     pygame.display.update()
 
 
@@ -61,7 +72,7 @@ def run_turn(currentGame, player, opponent):
     reward = currentGame.checkWin(player, opponent)
 
 
-def run_pygame_combat(combat_surface, screen, player_sprite):
+def run_pygame_combat(combat_surface, screen, player_sprite, bot_taunt_list, player_taunt_list):
     currentGame = Combat()
     player = PyGameHumanCombatPlayer("Legolas")
     """ Add a line below that will reset the player object
@@ -73,8 +84,14 @@ def run_pygame_combat(combat_surface, screen, player_sprite):
         AI_SPRITE_PATH, (player_sprite.sprite_pos[0] - 100, player_sprite.sprite_pos[1])
     )
 
+    counter = 0
     # Main Game Loop
     while not currentGame.gameOver:
-        draw_combat_on_window(combat_surface, screen, player_sprite, opponent_sprite)
-
+        draw_combat_on_window(combat_surface, screen, player_sprite, opponent_sprite, bot_taunt_list, player_taunt_list)
+        player_health = pygame.font.SysFont("Comic Sans MS", 25).render("Your HP: "+str(player.health), True, (220, 0, 0))
+        bot_health = pygame.font.SysFont("Comic Sans MS", 25).render("Thief HP: "+str(opponent.health), True, (220, 0, 0))
+        screen.blit(player_health, (50, 300))
+        screen.blit(bot_health, (50, 350))
         run_turn(currentGame, player, opponent)
+
+        

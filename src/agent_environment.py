@@ -6,6 +6,7 @@ from pygame_combat import run_pygame_combat
 from pygame_human_player import PyGameHumanPlayer
 from landscape import get_landscape, get_combat_bg, get_elevation, elevation_to_rgba
 from pygame_ai_player import PyGameAIPlayer
+from text_generation import player_taunt_pool, bot_taunt_pool
 
 from pathlib import Path
 
@@ -32,15 +33,9 @@ def get_landscape_surface(size):
     pygame_surface = pygame.surfarray.make_surface(landscape[:, :, :3])
     return pygame_surface, elevation
 
-
-# def get_combat_surface(size):
-#     landscape = get_combat_bg(size)
-#     print("Created a landscape of size", landscape.shape)
-#     pygame_surface = pygame.surfarray.make_surface(landscape[:, :, :3])
-#     return pygame_surface
 def get_combat_surface(size):
     landscape = get_combat_bg(size)
-    print("Created a landscape of size", landscape.shape)
+    print("Created a combat surface of size", landscape.shape)
     pygame_surface = load_image("assets/forest.png")
     pygame_surface = pygame.transform.scale(pygame_surface, size)
     return pygame_surface
@@ -84,7 +79,9 @@ if __name__ == "__main__":
     end_city = 9
     sprite_path = "assets/lego.png"
     sprite_speed = 1
-
+    bot_taunt_list = bot_taunt_pool()
+    player_taunt_list = player_taunt_pool()
+    print("Loaded AI generated messages")
     screen = setup_window(width, height, "Lost Wanderer of Elysia")
 
     landscape_surface, elevation = get_landscape_surface(size)
@@ -162,7 +159,7 @@ if __name__ == "__main__":
             state.current_city = state.destination_city
 
         if state.encounter_event:
-            run_pygame_combat(combat_surface, screen, player_sprite)
+            run_pygame_combat(combat_surface, screen, player_sprite, bot_taunt_list, player_taunt_list)
             state.encounter_event = False
         else:
             player_sprite.draw_sprite(screen)
