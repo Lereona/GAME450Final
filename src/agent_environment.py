@@ -191,8 +191,14 @@ if __name__ == "__main__":
             result = run_pygame_combat(combat_surface, screen, player_sprite, bot_taunt_list, player_taunt_list)
             #handles win or lose battle results
             if result == 1:
-                player.money += 30
-                print("Won battle, earned $10")
+                player.money += 25
+                print("Won battle, earned $25")
+                #win if over $150
+                if player.money >= 150:
+                    print("YOU WON! $150 REACHED")
+                    pygame.quit()
+                    sys.exit()
+                    break
             if result == -1:
                 print("Game OVER, ran out of HP!")
                 pygame.quit()

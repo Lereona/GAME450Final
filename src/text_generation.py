@@ -1,6 +1,6 @@
 #!/usr/bin/python
 import openai
-key = "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"
+key = ""
 
 def connection(key):
     OPENAI_API_KEY = key
@@ -44,20 +44,20 @@ def player_take_damage_message():
 
 def player_taunt_pool():
     count = 0
-    messages = ["player taunt replace later"]
-    # messages = []
-    # while count <4:
-    #     messages += [player_provoke_message()]
-    #     count += 1
+    #messages = ["player taunt replace later"]
+    messages = []
+    while count <4:
+        messages += [player_provoke_message()]
+        count += 1
     return messages
 
 def bot_taunt_pool():
     count = 0
-    messages = ["bot taunt replace later"]
-    # messages = []
-    # while count <4:
-    #     messages += [bot_provoke_message()]
-    #     count += 1
+    #messages = ["bot taunt replace later"]
+    messages = []
+    while count <4:
+        messages += [bot_provoke_message()]
+        count += 1
     return messages
 
 
