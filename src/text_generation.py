@@ -1,6 +1,7 @@
 #!/usr/bin/python
 import openai
-key = ""
+#PLACE THE CHAT GPT API KEY HERE
+key = "PLACE API KEY HERE"
 
 def connection(key):
     OPENAI_API_KEY = key
@@ -44,7 +45,6 @@ def player_take_damage_message():
 
 def player_taunt_pool():
     count = 0
-    #messages = ["player taunt replace later"]
     messages = []
     while count <4:
         messages += [player_provoke_message()]
@@ -53,7 +53,6 @@ def player_taunt_pool():
 
 def bot_taunt_pool():
     count = 0
-    #messages = ["bot taunt replace later"]
     messages = []
     while count <4:
         messages += [bot_provoke_message()]

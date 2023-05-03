@@ -36,7 +36,7 @@ def game_fitness(cities, idx, elevation, size):
     city_array = solution_to_cities(cities, size)
 
     for (x,y) in city_array:
-        #checking if cities are under water (if elevation is under 0.45, its considered under water) and cities are on top of mountains (if elevation is above 0.75, its considered on mountain)
+        #checking if cities are under water (if elevation is under 0.55, its considered under water) and cities are on top of mountains (if elevation is above 0.65, its considered on mountain)
         if ((elevation[x][y]> 0.55) & (elevation[x][y]< 0.65)):
             fitness += 0.1
         else:
